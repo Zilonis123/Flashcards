@@ -2,7 +2,12 @@ from src.UI.Font import font, draw_text
 from src.UI.Input import Input
 
 import pygame
+from colors import ColorWheel
 
+def get_next_color(wheel: ColorWheel):
+    wheel_next = tuple(wheel.next().rgb)
+    prim = pygame.Color(wheel_next)
+    return prim
 
 def run() -> None:
     pygame.init()
@@ -21,14 +26,20 @@ def run() -> None:
 
     tick = 0
 
+    wheel = ColorWheel()
+    primary_color = get_next_color(wheel)
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.KEYDOWN and not text_input.active: 
+                if event.key == pygame.K_r:
+                    primary_color = get_next_color(wheel)
 
-            text_input.tick(event)
+            text_input.tick_event(event)
 
-        screen.fill("purple")
+        screen.fill(primary_color)
 
         # RENDER
         # temporary surface that supports alpha 🐺
@@ -38,6 +49,9 @@ def run() -> None:
         draw_text(surface, text, text_rect)
 
         text_input.draw(surface, tick)
+
+        # tick
+        text_input.tick(tick)
 
         screen.blit(surface, (0,0))
 

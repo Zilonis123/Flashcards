@@ -9,17 +9,31 @@ class Input:
         self.text = ""
         self.active = False
 
+        self._backspace_down = False
 
-    def tick(self, event: pygame.event) -> None:
+
+    def tick_event(self, event: pygame.event) -> None:
         if event.type == pygame.MOUSEBUTTONDOWN:
             self.active = self.rect.collidepoint(event.pos)
+
+        if not self.active:
+            return
 
         if event.type == pygame.KEYDOWN: 
 
             if event.key == pygame.K_BACKSPACE: 
-                self.text = self.text[:-1] 
+                self._backspace_down = True
             else: 
                 self.text += event.unicode
+
+        if event.type == pygame.KEYUP:
+            if event.key == pygame.K_BACKSPACE:
+                self._backspace_down = False
+        
+    def tick(self, tick: int) -> None:
+        if self._backspace_down == True and tick%2==0:
+            self.text = self.text[:-1] 
+
 
     def draw(self, screen, tick: int) -> None:
         color_active = pygame.Color('lightskyblue3')
