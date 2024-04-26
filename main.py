@@ -1,4 +1,5 @@
-from src.UI.UI import font, draw_text
+from src.UI.Font import font, draw_text
+from src.UI.Input import Input
 
 import pygame
 
@@ -13,16 +14,22 @@ def run() -> None:
 
     sansbold = font()
 
+    text_input = Input((CENTER[0]-150, CENTER[1]+100), (300, 75))
+
     while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
+
+            text_input.tick(event)
 
         screen.fill("purple")
 
         # RENDER
         text, text_rect = sansbold.render_text("TEXT", CENTER)
         draw_text(screen, text, text_rect)
+
+        text_input.draw(screen)
 
         pygame.display.flip()
         clock.tick(60)
