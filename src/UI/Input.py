@@ -2,10 +2,10 @@ import pygame
 from .Font import font, draw_text
 
 class Input:
-    def __init__(self, pos: tuple[int, int], size: tuple[int, int]) -> None:
+    def __init__(self, pos: tuple[int, int], size: tuple[int, int], font: font) -> None:
         
         self.rect = pygame.Rect(pos, size)
-        self.font = font()
+        self.font = font
         self.text = ""
         self.active = False
 
@@ -21,16 +21,22 @@ class Input:
             else: 
                 self.text += event.unicode
 
-    def draw(self, screen) -> None:
+    def draw(self, screen, tick: int) -> None:
         color_active = pygame.Color('lightskyblue3')
         color_passive = pygame.Color('chartreuse4')
 
-        color = color_active if self.active else color_passive
+        color = color_passive
 
         # draw box
         pygame.draw.rect(screen, color, self.rect)
 
         # draw text
-        text, _ = self.font.render_text(self.text)
+        text, text_rect = self.font.render_text(self.text)
         draw_text(screen, text, (self.rect.x+5, self.rect.y+5))
+
+        # draw cursor
+        if self.active and tick%60>30:
+            x_pos = self.rect.x+5+text_rect.w
+            y = self.rect.y
+            pygame.draw.line(screen, "gray", (x_pos, y+5), (x_pos, y-5+self.rect.height))
         

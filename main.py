@@ -12,9 +12,14 @@ def run() -> None:
     clock = pygame.time.Clock()
     running = True
 
-    sansbold = font()
+    sansbold = font("./lib/fonts/coolvetica.otf")
 
-    text_input = Input((CENTER[0]-150, CENTER[1]+100), (300, 75))
+    text_input = Input(
+        (CENTER[0]-150, CENTER[1]+100), 
+        (300, sansbold.font.get_height()+10),
+        sansbold)
+
+    tick = 0
 
     while running:
         for event in pygame.event.get():
@@ -26,13 +31,19 @@ def run() -> None:
         screen.fill("purple")
 
         # RENDER
-        text, text_rect = sansbold.render_text("TEXT", CENTER)
-        draw_text(screen, text, text_rect)
+        # temporary surface that supports alpha 🐺
+        surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
 
-        text_input.draw(screen)
+        text, text_rect = sansbold.render_text("TEXT", CENTER)
+        draw_text(surface, text, text_rect)
+
+        text_input.draw(surface, tick)
+
+        screen.blit(surface, (0,0))
 
         pygame.display.flip()
         clock.tick(60)
+        tick += 1
 
     pygame.quit()
 
