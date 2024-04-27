@@ -46,7 +46,7 @@ def run() -> None:
         surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
 
         text, text_rect = sansbold.render_text("TEXT", CENTER)
-        draw_text(surface, text, text_rect)
+        surface.blit(text, text_rect)
 
         text_input.draw(surface, tick)
 

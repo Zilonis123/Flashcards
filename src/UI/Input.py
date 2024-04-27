@@ -45,12 +45,14 @@ class Input:
         pygame.draw.rect(screen, color, self.rect)
 
         # draw text
-        text, text_rect = self.font.render_text(self.text)
-        draw_text(screen, text, (self.rect.x+5, self.rect.y+5))
+        text_w = 0
+        if len(self.text) > 0:
+            text_rect = draw_text(screen, self.text, "white", self.rect, self.font, (self.rect.x+5,self.rect.y+5))
+            text_w = text_rect.w
 
         # draw cursor
         if self.active and tick%60>30:
-            x_pos = self.rect.x+5+text_rect.w
+            x_pos = self.rect.x+5+text_w
             y = self.rect.y
             pygame.draw.line(screen, "gray", (x_pos, y+5), (x_pos, y-5+self.rect.height))
         

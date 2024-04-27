@@ -7,9 +7,27 @@ class font:
     def render_text(self, font_text: str, pos: tuple[int, int]= (0,0), color="white") -> tuple[pygame.Surface, pygame.Rect]:
         text = self.font.render(font_text, True, color)
         text_rect = text.get_rect()
-        text_rect.center = pos
+        text_rect.topleft = pos
 
         return (text, text_rect)
 
-def draw_text(screen, text: pygame.Surface, text_rect: pygame.Rect) -> None:
-    screen.blit(text, text_rect)
+def draw_text(surface, text: str, color: str, rect: pygame.Rect, font: font, pos: tuple[int, int]) -> pygame.Rect:
+    rect = pygame.Rect(rect)
+    
+    size: tuple[int, int] = font.font.size(text)
+    full_text_width: int = size[0]
+    l_width: int = full_text_width//len(text)
+    
+    if full_text_width > rect.w:
+        c: int = 1*(len(text)-rect.w//l_width)
+        text: str = text[c:len(text)]
+    
+     
+    t, t_rect = font.render_text(text, pos, color)
+
+    surface.blit(t, t_rect)
+    
+    return t_rect
+    
+
+
