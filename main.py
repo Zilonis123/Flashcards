@@ -4,63 +4,75 @@ from src.UI.Input import Input
 import pygame
 from colors import ColorWheel
 
-def get_next_color(wheel: ColorWheel):
-    wheel_next = tuple(wheel.next().rgb)
-    prim = pygame.Color(wheel_next)
-    return prim
 
-def run() -> None:
-    pygame.init()
-    SIZE = (1280, 720)
-    CENTER = (SIZE[0]//2, SIZE[1]//2)
-    screen = pygame.display.set_mode(SIZE)
-    clock = pygame.time.Clock()
-    running = True
+class render():
 
-    sansbold = font("./lib/fonts/coolvetica.otf")
+    def __init__(self) -> None:
+        self.SIZE = (1280, 720)
+        self.CENTER = (self.SIZE[0]//2, self.SIZE[1]//2)
+        self.screen = pygame.display.set_mode(self.SIZE)
+        self.clock = pygame.time.Clock()
+        self.running = True
 
-    text_input = Input(
-        (CENTER[0]-150, CENTER[1]+100), 
-        (300, sansbold.font.get_height()+10),
-        sansbold)
+        self.coolvetica = font("./lib/fonts/coolvetica.otf")
 
-    tick = 0
+        self.text_input = Input(
+            (self.CENTER[0]-150, self.CENTER[1]+100), 
+            (300, self.coolvetica.font.get_height()+10),
+            self.coolvetica)
 
-    wheel = ColorWheel()
-    primary_color = get_next_color(wheel)
+        self.tick = 0
 
-    while running:
+        self.wheel = ColorWheel()
+        self.primary_color = ""
+        self.get_next_color()
+
+    def get_next_color(self):
+        wheel_next = tuple(self.wheel.next().rgb)
+        self.primary_color = pygame.Color(wheel_next)
+
+    def events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                running = False
-            if event.type == pygame.KEYDOWN and not text_input.active: 
+                self.running = False
+            if event.type == pygame.KEYDOWN and not self.text_input.active: 
                 if event.key == pygame.K_r:
-                    primary_color = get_next_color(wheel)
+                    self.get_next_color()
 
-            text_input.tick_event(event)
+            self.text_input.tick_event(event)
 
-        screen.fill(primary_color)
+    def draw(self):
+        self.screen.fill(self.primary_color)
 
         # RENDER
         # temporary surface that supports alpha 🐺
-        surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+        surface = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
 
-        text, text_rect = sansbold.render_text("TEXT", CENTER)
+        text, text_rect = self.coolvetica.render_text("TEXT", self.CENTER)
         surface.blit(text, text_rect)
 
-        text_input.draw(surface, tick)
+        self.text_input.draw(surface, self.tick)
 
-        # tick
-        text_input.tick(tick)
+        self.screen.blit(surface, (0,0))
 
-        screen.blit(surface, (0,0))
+    def run(self) -> None:
+        while self.running:
+            self.events()
 
-        pygame.display.flip()
-        clock.tick(60)
-        tick += 1
+            self.draw()
+            
+            # tick
+            self.text_input.tick(self.tick)
 
-    pygame.quit()
+
+            pygame.display.flip()
+            self.clock.tick(60)
+            self.tick += 1
+
+        pygame.quit()
 
 
 if __name__ == "__main__":
-    run()
+    pygame.init()
+
+    render().run()
