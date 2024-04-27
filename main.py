@@ -6,7 +6,7 @@ from colors import ColorWheel
 class render():
 
     def __init__(self) -> None:
-        self.SIZE = (1280, 720)
+        self.SIZE = (720, 720)
         self.CENTER = (self.SIZE[0]//2, self.SIZE[1]//2)
         self.screen = pygame.display.set_mode(self.SIZE)
         self.clock = pygame.time.Clock()
@@ -68,7 +68,8 @@ class render():
 
             if not self.chaningFlashcards:
                 for flashcard in self.flashcards:
-                    flashcard.tick_event(event)
+                    dobreak = flashcard.tick_event(event, self)
+                    if dobreak: break
 
     def draw(self) -> None:
         # RENDER
@@ -92,13 +93,16 @@ class render():
                 flashcard.tick(self)
 
             if self.chaningFlashcards:
-                sped = self.SIZE[1]/120
+                transition_frames = 30
+
+                sped = self.SIZE[1]/transition_frames
                 self.flashcards[0].change_pos((0, -sped))
                 self.flashcards[-1].change_pos((0, -sped))
 
-                if self.tick == 120:
+                if self.tick == transition_frames:
                     self.chaningFlashcards = False
                     self.flashcards[0].set_pos((0,0))
+                    self.flashcards[-1].active = False
 
             pygame.display.flip()
             self.clock.tick(60)

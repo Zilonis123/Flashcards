@@ -17,6 +17,7 @@ class Flashcard():
             (render.CENTER[0]-150, render.CENTER[1]+100), 
             (300, self.font.font.get_height()+10),
             self.font)
+        self.text_input.active = True
         
         # background
         background_color: pygame.Color = render.get_next_color()
@@ -52,11 +53,18 @@ class Flashcard():
 
         screen.blit(t, t_rect)
 
-    def tick_event(self, event: pygame.event) -> None:
+    def tick_event(self, event: pygame.event, render) -> bool:
         if not self.active: 
-            return
+            return False
+        
+        if event.type == pygame.KEYDOWN:
+            if event.key == 13:
+                # ENTER
+                render.next_flashcard()
+                return True
         
         self.text_input.tick_event(event)
+        return False
 
 
     def tick(self, render) -> None:
