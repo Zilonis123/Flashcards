@@ -20,7 +20,6 @@ class Input:
             return
 
         if event.type == pygame.KEYDOWN: 
-
             if event.key == pygame.K_BACKSPACE: 
                 self._backspace_down = True
             else: 

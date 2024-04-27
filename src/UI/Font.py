@@ -4,14 +4,16 @@ class font:
     def __init__(self, font_name="freesansbold.ttf", font_size=32) -> None:
         self.font = pygame.font.Font(font_name, font_size)
 
-    def render_text(self, font_text: str, pos: tuple[int, int]= (0,0), color="white") -> tuple[pygame.Surface, pygame.Rect]:
+    def render_text(self, font_text: str, color="white") -> tuple[pygame.Surface, pygame.Rect]:
         text = self.font.render(font_text, True, color)
         text_rect = text.get_rect()
-        text_rect.topleft = pos
 
         return (text, text_rect)
 
 def draw_text(surface, text: str, color: str, rect: pygame.Rect, font: font, pos: tuple[int, int]) -> pygame.Rect:
+    """
+    Draws text inside a rect
+    """
     rect = pygame.Rect(rect)
     
     size: tuple[int, int] = font.font.size(text)
@@ -23,7 +25,8 @@ def draw_text(surface, text: str, color: str, rect: pygame.Rect, font: font, pos
         text: str = text[c:len(text)]
     
      
-    t, t_rect = font.render_text(text, pos, color)
+    t, t_rect = font.render_text(text, color)
+    t_rect.topleft = pos
 
     surface.blit(t, t_rect)
     

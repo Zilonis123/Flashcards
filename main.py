@@ -1,6 +1,4 @@
-from src.UI.Font import font, draw_text
-from src.UI.Input import Input
-
+from src.UI.Flashcard import Flashcard
 import pygame
 from colors import ColorWheel
 
@@ -14,45 +12,66 @@ class render():
         self.clock = pygame.time.Clock()
         self.running = True
 
-        self.coolvetica = font("./lib/fonts/coolvetica.otf")
 
-        self.text_input = Input(
-            (self.CENTER[0]-150, self.CENTER[1]+100), 
-            (300, self.coolvetica.font.get_height()+10),
-            self.coolvetica)
 
         self.tick = 0
 
         self.wheel = ColorWheel()
-        self.primary_color = ""
-        self.get_next_color()
+
+
+
+        self.flashcard_Qs = [{"question":"5+5=?", "answer": "10"},
+                           {"question":"5*5=?", "answer": "25"},
+                           {"question":"10/5=?", "answer": "2"},
+                           {"question":"5-5=?", "answer": "0"}]
+
+        self.flashcards = self.generate_flashcards(self.flashcard_Qs)
+
+    def generate_flashcards(self, QnA: list[dict]) -> list[Flashcard]:
+        flashcards = []
+
+        for i in range(len(QnA)):
+            qna = QnA[i]
+            q = qna["question"]
+            a = qna["answer"]
+
+            flashcards.append(Flashcard(self, q, a, active=True if i == 0 else False))
+
+        return flashcards
 
     def get_next_color(self):
         wheel_next = tuple(self.wheel.next().rgb)
-        self.primary_color = pygame.Color(wheel_next)
+        color = pygame.Color(wheel_next)
+        return color
+    
 
-    def events(self):
+    def next_flashcard(self) -> None:
+        flashcard = self.flashcards.pop(0)
+        flashcard.active = False
+        self.flashcards.append(flashcard)
+
+        self.flashcards[0].active = True
+
+
+    def events(self) -> None:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            if event.type == pygame.KEYDOWN and not self.text_input.active: 
-                if event.key == pygame.K_r:
-                    self.get_next_color()
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_NUMLOCK:
+                    self.next_flashcard()
 
-            self.text_input.tick_event(event)
+            for flashcard in self.flashcards:
+                flashcard.tick_event(event)
 
-    def draw(self):
-        self.screen.fill(self.primary_color)
-
+    def draw(self) -> None:
         # RENDER
         # temporary surface that supports alpha 🐺
         surface = pygame.Surface(self.screen.get_size(), pygame.SRCALPHA)
 
-        text, text_rect = self.coolvetica.render_text("TEXT", self.CENTER)
-        surface.blit(text, text_rect)
-
-        self.text_input.draw(surface, self.tick)
-
+        for flashcard in self.flashcards:
+            flashcard.draw(self, surface)
+        
         self.screen.blit(surface, (0,0))
 
     def run(self) -> None:
@@ -60,10 +79,10 @@ class render():
             self.events()
 
             self.draw()
-            
-            # tick
-            self.text_input.tick(self.tick)
 
+            # tick
+            for flashcard in self.flashcards:
+                flashcard.tick(self)
 
             pygame.display.flip()
             self.clock.tick(60)
