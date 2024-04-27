@@ -1,12 +1,31 @@
 from src.UI.Flashcard import Flashcard
-import pygame
+import pygame, requests
 from colors import ColorWheel
 
+def get_questions() -> list:
+    def replace_html_entities(text):
+        replacements = {
+            '&#039;': "'",
+            '&quot;': '"'
+        }
+        for entity, replacement in replacements.items():
+            text = text.replace(entity, replacement)
+        return text
 
+    url = "https://opentdb.com/api.php?amount=50&category=9&type=boolean"
+    data = requests.get(url).json()
+    
+
+    QnA = []
+    for item in data["results"]:
+        question = {"question": replace_html_entities(item["question"]), "answer":item["correct_answer"]}
+        QnA.append(question)
+
+    return QnA
 class render():
 
-    def __init__(self) -> None:
-        self.SIZE = (720, 720)
+    def __init__(self, questions: list[dict]) -> None:
+        self.SIZE = (980, 720)
         self.CENTER = (self.SIZE[0]//2, self.SIZE[1]//2)
         self.screen = pygame.display.set_mode(self.SIZE)
         self.clock = pygame.time.Clock()
@@ -20,14 +39,14 @@ class render():
 
 
 
-        self.flashcard_Qs = [{"question":"5+5=?", "answer": "10"},
-                           {"question":"5*5=?", "answer": "25"},
-                           {"question":"10/5=?", "answer": "2"},
-                           {"question":"5-5=?", "answer": "0"}]
+        self.flashcard_Qs = questions
 
         self.flashcards = self.generate_flashcards(self.flashcard_Qs)
 
         self.chaningFlashcards = False
+
+    
+            
 
     def generate_flashcards(self, QnA: list[dict]) -> list[Flashcard]:
         flashcards = []
@@ -114,4 +133,6 @@ class render():
 if __name__ == "__main__":
     pygame.init()
 
-    render().run()
+    print("Getting questions!")
+    qs = get_questions()
+    render(qs).run()

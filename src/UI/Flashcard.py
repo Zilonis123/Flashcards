@@ -1,5 +1,5 @@
 import pygame
-from .Font import font
+from .Font import font, wrap_text
 from .Input import Input
 
 
@@ -50,8 +50,10 @@ class Flashcard():
         # draw the question
         t, t_rect = self.font.render_text(self.question)
         t_rect.center = change_tuple(render.CENTER, self.pos)
+        
+        wrap_text(screen, self.question, "white", pygame.Rect((0,0), render.SIZE), self.font, change_tuple(render.CENTER, self.pos))
 
-        screen.blit(t, t_rect)
+        # screen.blit(t, t_rect)
 
     def tick_event(self, event: pygame.event, render) -> bool:
         if not self.active: 
