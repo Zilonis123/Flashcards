@@ -62,3 +62,15 @@ class Input:
             y = self.rect.y
             pygame.draw.line(screen, color, (x_pos, y+5), (x_pos, y-5+self.rect.height))
         
+
+class Checkbox():
+    def __init__(self, pos: tuple[int, int], size: tuple[int, int]) -> None:
+        self.rect = pygame.Rect(pos, size)
+        self.text = ""
+        self.active = False # on / off
+
+    def tick_event(self, event):
+        pass
+
+    def draw(self, screen, tick):
+        pass

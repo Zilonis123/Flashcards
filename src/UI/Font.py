@@ -1,4 +1,4 @@
-import pygame
+import pygame, textwrap
 
 class font:
     def __init__(self, font_name="freesansbold.ttf", font_size=32) -> None:
@@ -13,7 +13,7 @@ class font:
 
 
 
-def wrap_text(surface, text: str, color: str, rect: pygame.Rect, font: font, pos: tuple[int, int]) -> pygame.Rect:
+def wrap_text(surface, text: str, color: str, rect: pygame.Rect, font: font, pos: tuple[int, int]):
     """
     Wraps text so it fits inside a rect
     """
@@ -22,35 +22,23 @@ def wrap_text(surface, text: str, color: str, rect: pygame.Rect, font: font, pos
     rect = pygame.Rect(rect)
     
     size: tuple[int, int] = font.font.size(text)
+    text_height: int = size[1]
     full_text_width: int = size[0]
     l_width: int = full_text_width//len(text)+1
     
-    if full_text_width > rect.w:
+    wrapper = textwrap.TextWrapper(width=rect.w//l_width-3)
 
-        completed = False
-        i=0
-        while not completed:
-            try:
-                writable: str = text[i*rect.w//l_width:(i+1)*rect.w//l_width]
-                text = text[i*rect.w//l_width:-1]
-            except:
-                writable: str = text[i*rect.w//l_width:-1]
-                completed = True
-            t, t_rect = font.render_text(writable, color)
-            t_rect.center = (pos[0], pos[1]+(t_rect.h*i))
-
-            surface.blit(t, t_rect)
-            i+=1
-            if i>100:
-                break
+    text_list: list[str] = wrapper.wrap(text)
     
+    for i in range(len(text_list)):
+        element = text_list[i]
      
-    t, t_rect = font.render_text(text, color)
-    t_rect.center = pos
+        t, t_rect = font.render_text(element, color)
+        t_rect.center = pos
+        t_rect.bottom += i*text_height
 
-    surface.blit(t, t_rect)
+        surface.blit(t, t_rect)
     
-    return t_rect
     
 
 
