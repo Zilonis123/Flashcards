@@ -2,10 +2,11 @@ import pygame
 from .Font import font, draw_text
 
 class Input:
-    def __init__(self, pos: tuple[int, int], size: tuple[int, int], font: font) -> None:
+    def __init__(self, pos: tuple[int, int], size: tuple[int, int], text_font: font) -> None:
         
         self.rect = pygame.Rect(pos, size)
-        self.font = font
+        self.font = text_font
+        self.font_small = font(self.font.font_name, 24)
         self.text = ""
         self.active = False
 
@@ -35,13 +36,19 @@ class Input:
 
 
     def draw(self, screen, tick: int) -> None:
-        color_active = pygame.Color('lightskyblue3')
-        color_passive = pygame.Color('chartreuse4')
+        color_passive = pygame.Color((200,200,200))
+        color_active = pygame.Color('#0492c2')
 
-        color = color_passive
+        color = color_passive if not self.active else color_active
 
         # draw box
-        pygame.draw.rect(screen, color, self.rect)
+        pygame.draw.rect(screen, color, self.rect, width=3, border_radius=7)
+
+        # draw label
+        t, t_rect = self.font_small.render_text("Answer", color)
+        t_rect.bottomleft = self.rect.topleft
+        # t_rect.bottom -= t_rect.height
+        screen.blit(t, t_rect)
 
         # draw text
         text_w = 0
@@ -53,5 +60,5 @@ class Input:
         if self.active and tick%60>30:
             x_pos = self.rect.x+5+text_w
             y = self.rect.y
-            pygame.draw.line(screen, "gray", (x_pos, y+5), (x_pos, y-5+self.rect.height))
+            pygame.draw.line(screen, color, (x_pos, y+5), (x_pos, y-5+self.rect.height))
         

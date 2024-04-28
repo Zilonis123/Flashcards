@@ -3,6 +3,7 @@ import pygame
 class font:
     def __init__(self, font_name="freesansbold.ttf", font_size=32) -> None:
         self.font = pygame.font.Font(font_name, font_size)
+        self.font_name = font_name
 
     def render_text(self, font_text: str, color="white") -> tuple[pygame.Surface, pygame.Rect]:
         text = self.font.render(font_text, True, color)
