@@ -1,6 +1,6 @@
 import pygame
 from .Font import font, wrap_text
-from .Input import Input
+from .Input import Input, Checkbox
 
 
 class Flashcard():
@@ -13,20 +13,29 @@ class Flashcard():
         self.CENTER = render.CENTER
 
         self.font = font("./lib/fonts/coolvetica.otf")
-        self.text_input = Input(
-            (render.CENTER[0]-150, render.CENTER[1]+100), 
-            (300, self.font.font.get_height()+10),
-            self.font)
-        self.text_input.active = True
+
+        self.interactive_el: list[Input | Checkbox] = []
+
+        if 1==2:
+            pass
+        else:
+            text_input = Input(
+                (render.CENTER[0]-150, render.CENTER[1]+100), 
+                (300, self.font.font.get_height()+10),
+                self.font)
+            text_input.active = True
+            self.interactive_el.append(text_input)
         
         # background
         background_color: pygame.Color = render.get_next_color()
         self.background = Background(background_color, render.SIZE)
 
+
     def change_pos(self, offset: tuple[int, int]) -> tuple[int, int]:
         self.pos = change_tuple(self.pos, offset)
 
-        self.text_input.rect.topleft = change_tuple(self.text_input.rect.topleft, offset)
+        for el in self.interactive_el:
+            el.rect.topleft = change_tuple(el.rect.topleft, offset)
         self.background.rect.topleft = change_tuple(self.background.rect.topleft, offset)
 
         return self.pos
@@ -34,7 +43,8 @@ class Flashcard():
     def set_pos(self, pos: tuple[int, int]) -> tuple[int, int]:
         self.pos = pos
 
-        self.text_input.rect.top = pos[1]+self.CENTER[1]+100
+        for el in self.interactive_el:
+            el.rect.top = pos[1]+self.CENTER[1]+100
         self.background.rect.topleft = pos
 
         return self.pos
@@ -45,7 +55,8 @@ class Flashcard():
         
         self.background.draw(screen)
 
-        self.text_input.draw(screen, render.tick)
+        for el in self.interactive_el:
+            el.draw(screen, render.tick)
 
         # draw the question
         t, t_rect = self.font.render_text(self.question)
@@ -65,16 +76,20 @@ class Flashcard():
                 render.next_flashcard()
                 return True
         
-        self.text_input.tick_event(event)
+        for el in self.interactive_el:
+            el.tick_event(event)
         return False
 
 
     def tick(self, render) -> None:
         if not self.active: 
             return
+        
+        for el in self.interactive_el:
+            el.tick(render.tick)
 
-        self.text_input.tick(render.tick)
-
+        if self.interactive_el[0].text.lower() == self.answer.lower():
+            self.background.color = "green"
 class Background():
     def __init__(self, color: pygame.Color, size: tuple[int, int], pos=(0,0)) -> None:
         

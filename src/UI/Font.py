@@ -17,8 +17,6 @@ def wrap_text(surface, text: str, color: str, rect: pygame.Rect, font: font, pos
     """
     Wraps text so it fits inside a rect
     """
-    # NOTE To future self: "Please don't blame me if this doesn't work for you because it barely worked for me
-    # also by saying this I hereby don't have any guilt if this breaks"
     rect = pygame.Rect(rect)
     
     size: tuple[int, int] = font.font.size(text)

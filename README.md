@@ -18,7 +18,7 @@ python main.py
 
 ## How to use
 
-Look at the question in the middle of the screen. When you know the answer write it and press Enter (This version does not show if you were correct)
+Look at the question in the middle of the screen. When you know the answer write it if the answer was correct the program is going to change the background. To continue to the next card press Enter
 
 # Credits
 
