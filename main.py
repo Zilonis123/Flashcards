@@ -2,6 +2,13 @@ from src.UI.Flashcard import Flashcard
 import pygame, requests
 from colors import ColorWheel
 
+"""
+    The code fetches a set of True/False questions from an API, creates flashcards for each question,
+    and allows the user to navigate through the flashcards with a transition effect.
+    :return: A list of dictionaries containing questions and answers fetched from the Open Trivia
+    Database API.
+"""
+
 def get_questions() -> list:
     def replace_html_entities(text):
         replacements = {
