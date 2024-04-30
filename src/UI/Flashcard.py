@@ -1,7 +1,23 @@
 import pygame
+    
 from .Font import font, wrap_text
 from .Input import Input, Checkbox
 
+"""
+    The code defines a Flashcard class in Python that represents a flashcard with a question and answer,
+    along with interactive elements like text input and checkboxes.
+    
+    :param tuple1: The `change_tuple` function takes two tuples as input parameters and returns a new
+    tuple where each element is the sum of the corresponding elements from the input tuples
+    :type tuple1: tuple[float, float]
+    :param tuple2: The `tuple2` parameter in the `change_tuple` function is a tuple containing two float
+    values. It is used to specify the offset that will be added to the corresponding values in `tuple1`.
+    The function returns a new tuple where each element is the sum of the corresponding elements in
+    `tuple
+    :type tuple2: tuple[float, float]
+    :return: The function `change_tuple` takes two tuples of floats as input and returns a new tuple
+    where the elements are the sum of the corresponding elements from the input tuples.
+"""
 
 class Flashcard():
     def __init__(self, render, question: str, answer: str, active=False, pos=(0,0)) -> None:

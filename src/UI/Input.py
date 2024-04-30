@@ -1,6 +1,9 @@
 import pygame
 from .Font import font, draw_text
 
+# The `Input` class represents an input field with text entry functionality and the `Checkbox` class
+# represents a checkbox with on/off state.
+
 class Input:
     def __init__(self, pos: tuple[int, int], size: tuple[int, int], text_font: font) -> None:
         
